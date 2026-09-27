@@ -74,9 +74,9 @@ jobs:
           node-version: 24
       - name: Fetch pinned verdict publisher (no PR checkout)
         env:
-          RUNNER_HASH: 82217865522a4883213a160b68dadbddf298d09042298fa2337e8762c63e8296
+          RUNNER_HASH: 5ba6ffc16489340691fc0b180c3bdcaf7d953ae550d63e3e2a2bd19d44b85441
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/verdict-runner/82217865522a4883213a160b68dadbddf298d09042298fa2337e8762c63e8296.mjs' -o "$RUNNER_TEMP/mhoo-verdict.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/verdict-runner/5ba6ffc16489340691fc0b180c3bdcaf7d953ae550d63e3e2a2bd19d44b85441.mjs' -o "$RUNNER_TEMP/mhoo-verdict.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-verdict.mjs" | sha256sum --check --status
       - name: Collect independent cloud verdict and publish bound check
         env:

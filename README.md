@@ -10,7 +10,7 @@ node baseline.mjs
 
 `value.mjs` initially exports the integer `0`. The bounded repair experiment targets `1` and adds `regression.mjs`.
 
-Native CI and review requirements protect `main`. Required checks are `canary-ci` and `mhoo-review-verdict` from GitHub Actions. This solo-maintainer canary does not require a second person's approval. Repository auto-merge capability does not authorize any individual merge.
+The intended `main` policy requires `canary-ci` and `mhoo-review-verdict` from GitHub Actions. The solo-maintainer policy uses zero required human approvals. Repository auto-merge capability does not authorize any individual merge.
 
 This PR first exercised the optional auto-merge switch while the required approval kept it open; it now prepares the pinned review and repair workflow.
 
@@ -24,6 +24,6 @@ Installing this workflow does not prove a live repair or enable auto-merge. Requ
 
 ## Automated review verdict
 
-The cloud service reads the full small repository at both PR revisions and runs the existing review specialists. Missing source, blocking findings, incomplete reviews, unresolved coverage gaps and uncertain repairs prevent a pass. The publisher never executes PR code; it writes a separate `mhoo-review-verdict` check bound to the reviewed head and base. CI remains a separate required check.
+The cloud service reviews all source in this small repository at both PR revisions against the declared interfaces of its pinned dependencies. It runs the existing review specialists after current-head CI completes. Missing source, blocking findings, incomplete reviews, unresolved coverage gaps and uncertain repairs prevent a pass. The publisher never executes PR code; it writes a separate `mhoo-review-verdict` check bound to the reviewed head and base. CI remains a separate required check. Source review does not claim that a live repair, merge or deployment succeeded; those require separate operational evidence.
 
 The initial branch push supports installation only: the service must enroll this exact workflow commit, repository and PR 1 before it can run. It cannot enroll itself. Normal operation uses the reviewed default-branch workflow. The check-writing permission belongs only to the verdict job's short-lived GitHub Actions token; the GitHub App's permissions are unchanged.
