@@ -1,7 +1,5 @@
 name: Mhoo AI review
 on:
-  push:
-    branches: [codex/optional-merge-canary]
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
@@ -19,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   review:
-    if: github.event_name != 'push' && github.repository_owner == 'mhoo-os' && github.event.pull_request.draft != true
+    if: github.repository_owner == 'mhoo-os' && github.event.pull_request.draft != true
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -49,9 +47,9 @@ jobs:
           node-version: 24
       - name: Fetch pinned repair supervisor (no PR checkout)
         env:
-          RUNNER_HASH: 942884c7fbed7dc1be83c57561f088f2533021e21de43b1650a35c17d239c4c5
+          RUNNER_HASH: c406fbd49b5ee1bfc7e6ce3668b2bfe23c0021d6fdba85862cd14b57263608d3
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/942884c7fbed7dc1be83c57561f088f2533021e21de43b1650a35c17d239c4c5.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/c406fbd49b5ee1bfc7e6ce3668b2bfe23c0021d6fdba85862cd14b57263608d3.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-repair.mjs" | sha256sum --check --status
       - name: Prepare pinned isolated test image
         run: docker pull --platform linux/amd64 node@sha256:5cbc7caba8c2c0f0bca675d1b61b9f2857e1cf1853c6164ee9dd409501a936e7
@@ -61,7 +59,7 @@ jobs:
         run: node "$RUNNER_TEMP/mhoo-repair.mjs"
   verdict-publisher:
     needs: [review, repair]
-    if: always() && !cancelled() && (github.event_name == 'push' || needs.review.result == 'success') && (needs.repair.result == 'success' || needs.repair.result == 'skipped')
+    if: always() && !cancelled() && needs.review.result == 'success' && (needs.repair.result == 'success' || needs.repair.result == 'skipped')
     permissions:
       contents: read
       checks: write
@@ -81,5 +79,4 @@ jobs:
       - name: Collect independent cloud verdict and publish bound check
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          MHOO_BOOTSTRAP_PR: '1'
         run: node "$RUNNER_TEMP/mhoo-verdict.mjs"
