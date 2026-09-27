@@ -1,0 +1,57 @@
+name: Mhoo AI review
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Open PR number to review
+        required: true
+        type: string
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+concurrency:
+  group: mhoo-ai-review-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.repository_owner == 'mhoo-os' && github.event.pull_request.draft != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fetch pinned reviewer (no PR checkout)
+        env:
+          RUNNER_HASH: 5260fd7e5bf97d2f4628838029a6d4e15b77a347133d0bf2526b5d4edf6a1171
+        run: |
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/runner/5260fd7e5bf97d2f4628838029a6d4e15b77a347133d0bf2526b5d4edf6a1171.mjs' -o "$RUNNER_TEMP/mhoo-review.mjs"
+          echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-review.mjs" | sha256sum --check --status
+      - name: Review current PR head and update comment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node "$RUNNER_TEMP/mhoo-review.mjs"
+  repair:
+    needs: review
+    if: vars.MHOO_REPAIR_ENABLED == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Fetch pinned repair supervisor (no PR checkout)
+        env:
+          RUNNER_HASH: f02a9831166e6643f87955c69ec75aff01174404d4f2dea0e5335deccb04485a
+        run: |
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/f02a9831166e6643f87955c69ec75aff01174404d4f2dea0e5335deccb04485a.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
+          echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-repair.mjs" | sha256sum --check --status
+      - name: Prepare pinned isolated test image
+        run: docker pull --platform linux/amd64 node@sha256:5cbc7caba8c2c0f0bca675d1b61b9f2857e1cf1853c6164ee9dd409501a936e7
+      - name: Run one bounded repair attempt
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node "$RUNNER_TEMP/mhoo-repair.mjs"
