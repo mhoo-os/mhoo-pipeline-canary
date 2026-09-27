@@ -47,9 +47,9 @@ jobs:
           node-version: 24
       - name: Fetch pinned repair supervisor (no PR checkout)
         env:
-          RUNNER_HASH: c406fbd49b5ee1bfc7e6ce3668b2bfe23c0021d6fdba85862cd14b57263608d3
+          RUNNER_HASH: e8ac305347a3120d5fc1575c289953621db97195951384acbb9bccaf14ef0491
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/c406fbd49b5ee1bfc7e6ce3668b2bfe23c0021d6fdba85862cd14b57263608d3.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/e8ac305347a3120d5fc1575c289953621db97195951384acbb9bccaf14ef0491.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-repair.mjs" | sha256sum --check --status
       - name: Prepare pinned isolated test image
         run: docker pull --platform linux/amd64 node@sha256:5cbc7caba8c2c0f0bca675d1b61b9f2857e1cf1853c6164ee9dd409501a936e7
