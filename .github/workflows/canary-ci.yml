@@ -18,3 +18,8 @@ jobs:
         with:
           node-version: 24
       - run: node baseline.mjs
+      - name: Verify repair regression when present
+        run: |
+          if [ -f regression.mjs ]; then
+            node regression.mjs
+          fi
