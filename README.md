@@ -31,3 +31,5 @@ Bootstrap installation is complete and the temporary branch-push trigger is remo
 After default-branch installation and enrollment, a manual workflow dispatch takes the positive integer input `pr_number`. The advisory and repair supervisors read that input from GitHub's event file; PR events supply `pull_request.number`. Branch pushes are not a direct repair entry point.
 
 Optional protected merge runs in the cloud delivery workflow after Actions finishes. It rechecks the signed verdict, current revision, CI and native protection before one expected-head merge. Turning the switch off prevents new merge requests; uncertain earlier outcomes remain subject to read-only reconciliation.
+
+The repair supervisor has two distinct review stages. Diagnosis inspects the existing source before generating a patch; a proposed regression file may be verified absent at that point. Candidate review requires the generated regression and observed fail-before/pass-after results. A missing regression, one that already passes the original source, or one that still fails the candidate prevents publication. The baseline file stays unchanged throughout.
