@@ -1,5 +1,7 @@
 name: Mhoo AI review
 on:
+  push:
+    branches: [codex/optional-merge-canary]
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
@@ -17,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   review:
-    if: github.repository_owner == 'mhoo-os' && github.event.pull_request.draft != true
+    if: github.event_name != 'push' && github.repository_owner == 'mhoo-os' && github.event.pull_request.draft != true
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -57,3 +59,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node "$RUNNER_TEMP/mhoo-repair.mjs"
+  verdict-publisher:
+    needs: [review, repair]
+    if: always() && !cancelled() && (github.event_name == 'push' || needs.review.result == 'success') && (needs.repair.result == 'success' || needs.repair.result == 'skipped')
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Fetch pinned verdict publisher (no PR checkout)
+        env:
+          RUNNER_HASH: f26895a68a91056fec46a7a54b3e72b5e455f5f5e1bbf9a9b2378c64dbb3f5c8
+        run: |
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/verdict-runner/f26895a68a91056fec46a7a54b3e72b5e455f5f5e1bbf9a9b2378c64dbb3f5c8.mjs' -o "$RUNNER_TEMP/mhoo-verdict.mjs"
+          echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-verdict.mjs" | sha256sum --check --status
+      - name: Collect independent cloud verdict and publish bound check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MHOO_BOOTSTRAP_PR: '1'
+        run: node "$RUNNER_TEMP/mhoo-verdict.mjs"
