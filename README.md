@@ -12,7 +12,7 @@ node baseline.mjs
 
 The intended `main` policy requires `canary-ci` and `mhoo-review-verdict` from GitHub Actions. The solo-maintainer policy uses zero required human approvals. Repository auto-merge capability does not authorize any individual merge.
 
-This PR first exercised the optional auto-merge switch while the required approval kept it open; it now prepares the pinned review and repair workflow.
+Earlier installation PRs exercised the optional merge switch. This repository now contains the pinned review and repair workflow.
 
 ## Bounded cloud repair
 
@@ -42,7 +42,7 @@ The next distinct experiment uses `range.mjs`: `clamp(n, lo, hi)` returns `lo`
 when below the range, `hi` when above it, and `n` inside. Non-finite inputs or
 `lo > hi` throw `RangeError`. `range-baseline.mjs` protects inside/above-range,
 endpoints, equal bounds and invalid-input behavior. Native CI independently checks
-the lower bound too, so a broken lower branch is red before repair. The baseline
+zero, positive and negative lower bounds too, so a broken lower branch is red before repair. The baseline
 subset deliberately excludes that targeted defect, as this repair pipeline requires
 a passing unchanged baseline before generation.
 
