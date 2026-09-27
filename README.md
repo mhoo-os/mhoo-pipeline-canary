@@ -11,3 +11,5 @@ node baseline.mjs
 `value.mjs` initially exports the integer `0`. A later, separately authorized repair experiment can change it to `1` and add `regression.mjs`.
 
 Native CI and review requirements protect `main`. Repository auto-merge capability does not authorize any individual merge. A trusted pipeline verdict is not yet available.
+
+This synthetic README change exercises the optional auto-merge switch while the required approval keeps the pull request open.
