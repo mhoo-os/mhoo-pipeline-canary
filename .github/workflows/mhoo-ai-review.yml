@@ -23,9 +23,9 @@ jobs:
     steps:
       - name: Fetch pinned reviewer (no PR checkout)
         env:
-          RUNNER_HASH: 884efb4e4220a2429a72f2ab799909b12edd8569956196ec68039c0d83806c4d
+          RUNNER_HASH: 555df1dd70bb412ae904ffcfde44a308a4c5a5253b9c053a28441054341cf48f
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/runner/884efb4e4220a2429a72f2ab799909b12edd8569956196ec68039c0d83806c4d.mjs' -o "$RUNNER_TEMP/mhoo-review.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/runner/555df1dd70bb412ae904ffcfde44a308a4c5a5253b9c053a28441054341cf48f.mjs' -o "$RUNNER_TEMP/mhoo-review.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-review.mjs" | sha256sum --check --status
       - name: Review current PR head and update comment
         env:
