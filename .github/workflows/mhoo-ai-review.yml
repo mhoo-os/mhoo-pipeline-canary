@@ -23,9 +23,9 @@ jobs:
     steps:
       - name: Fetch pinned reviewer (no PR checkout)
         env:
-          RUNNER_HASH: 5260fd7e5bf97d2f4628838029a6d4e15b77a347133d0bf2526b5d4edf6a1171
+          RUNNER_HASH: 884efb4e4220a2429a72f2ab799909b12edd8569956196ec68039c0d83806c4d
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/runner/5260fd7e5bf97d2f4628838029a6d4e15b77a347133d0bf2526b5d4edf6a1171.mjs' -o "$RUNNER_TEMP/mhoo-review.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/runner/884efb4e4220a2429a72f2ab799909b12edd8569956196ec68039c0d83806c4d.mjs' -o "$RUNNER_TEMP/mhoo-review.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-review.mjs" | sha256sum --check --status
       - name: Review current PR head and update comment
         env:
@@ -47,9 +47,9 @@ jobs:
           node-version: 24
       - name: Fetch pinned repair supervisor (no PR checkout)
         env:
-          RUNNER_HASH: 51ad027e5aad6e654f5a0e231bf98c4918c4061c09b051d45e39f8e9b5712596
+          RUNNER_HASH: 0674c5bd091ec9ae859966bdfccb844ffb0c0231a180ada99294e5ed4e6df99c
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/51ad027e5aad6e654f5a0e231bf98c4918c4061c09b051d45e39f8e9b5712596.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/repair-runner/0674c5bd091ec9ae859966bdfccb844ffb0c0231a180ada99294e5ed4e6df99c.mjs' -o "$RUNNER_TEMP/mhoo-repair.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-repair.mjs" | sha256sum --check --status
       - name: Prepare pinned isolated test image
         run: docker pull --platform linux/amd64 node@sha256:5cbc7caba8c2c0f0bca675d1b61b9f2857e1cf1853c6164ee9dd409501a936e7
@@ -72,9 +72,9 @@ jobs:
           node-version: 24
       - name: Fetch pinned verdict publisher (no PR checkout)
         env:
-          RUNNER_HASH: adbac2828d0e1476f06eac1c19c44d4d7f2a13013a70042f43767cceebdd1152
+          RUNNER_HASH: 7db147565cd9ded5f1f39507ff213dd2c9843ddddabe8b6072392b0f44fcac50
         run: |
-          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/verdict-runner/adbac2828d0e1476f06eac1c19c44d4d7f2a13013a70042f43767cceebdd1152.mjs' -o "$RUNNER_TEMP/mhoo-verdict.mjs"
+          curl --fail --silent --show-error --max-time 30 --proto '=https' 'https://mhoo-ai-review.mhoo-app.workers.dev/verdict-runner/7db147565cd9ded5f1f39507ff213dd2c9843ddddabe8b6072392b0f44fcac50.mjs' -o "$RUNNER_TEMP/mhoo-verdict.mjs"
           echo "$RUNNER_HASH  $RUNNER_TEMP/mhoo-verdict.mjs" | sha256sum --check --status
       - name: Collect independent cloud verdict and publish bound check
         env:
